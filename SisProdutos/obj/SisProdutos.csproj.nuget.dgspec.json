@@ -48,6 +48,10 @@
               "target": "Package",
               "version": "[8.1.1, )"
             },
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
             "FluentResults": {
               "target": "Package",
               "version": "[2.6.0, )"
@@ -56,15 +60,15 @@
               "target": "Package",
               "version": "[10.3.3, )"
             },
-            "Microsoft.AspNet.Identity.EntityFramework": {
+            "Microsoft.AspNetCore.Identity": {
               "target": "Package",
-              "version": "[2.2.3, )"
+              "version": "[2.2.0, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[5.0.10, )"
+              "version": "[5.0.11, )"
             },
-            "Microsoft.EntityFrameworkCore": {
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
               "version": "[5.0.11, )"
             },

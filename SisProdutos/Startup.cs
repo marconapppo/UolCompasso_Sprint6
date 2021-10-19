@@ -29,10 +29,10 @@ namespace SisProdutos
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ProdutoContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UsuarioConnection")));
+            services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UsuarioConnection")));
             services
                 .AddIdentity<IdentityUser<int>, IdentityRole<int>>()
-                .AddEntityFrameworkStores<ProdutoContext>();
+                .AddEntityFrameworkStores<UserContext>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

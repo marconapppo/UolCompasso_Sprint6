@@ -24,7 +24,6 @@ namespace SisProdutos
         public IActionResult CadastraUsuario(CreateUsuarioDto createDto)
         {
             Result resultado = _cadastroService.CadastraUsuario(createDto);
-            Console.WriteLine(resultado.Errors);
             if (resultado.IsFailed) return BadRequest(resultado.Errors);
             return Ok();
         }
