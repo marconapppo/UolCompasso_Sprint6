@@ -27,6 +27,7 @@ public class LoginService
                     .FirstOrDefault(usuario => 
                     usuario.NormalizedUserName == request.Username.ToUpper());
                 Token token = _tokenService.CreateToken(identityUser);
+
                 return Result.Ok().WithSuccess(token.Value);
             }
             return Result.Fail("Login falhou");

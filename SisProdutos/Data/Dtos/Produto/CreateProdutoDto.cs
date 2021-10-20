@@ -9,16 +9,16 @@ namespace SisProdutos
     public class CreateProdutoDto
     {
         [Required]
-        public string nome { get; set; }
+        public string Nome { get; set; }
         [Required]
-        public string descicao { get; set; }
+        public string Descicao { get; set; }
         [Required]
-        public decimal preco { get; set; }
+        public decimal Preco { get; set; }
         [Required]
-        public string palavraChave { get; set; }
+        public string PalavraChave { get; set; }
         [Required]
-        public string categoria { get; set; }
-
-
+        public string Categoria { get; set; }
+        [Required]
+        public int CidadeId { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace UsuariosApi.Profiles
         public ProdutoProfile()
         {
             CreateMap<CreateProdutoDto, Produto>();
+            CreateMap<Produto, ReadProdutoDto>();
         }
     }
 }

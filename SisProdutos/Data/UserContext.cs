@@ -14,5 +14,7 @@ namespace SisProdutos
         }
 
         public DbSet<Produto> Produtos { get; set; }
+        public DbSet<Cidade> Cidades { get; set; }
+        public DbSet<ProdutoCidade> ProdutoCidades { get; set; }
     }
 }

@@ -8,10 +8,11 @@ namespace SisProdutos
     public class Produto
     {
         public int Id { get; set; }
-        public string nome { get; set; }
-        public string descicao { get; set; }
-        public float preco { get; set; }
-        public string palavraChave { get; set; }
-        public string categoria { get; set; }
+        public string Nome { get; set; }
+        public string Descicao { get; set; }
+        public float Preco { get; set; }
+        public string PalavraChave { get; set; }
+        public string Categoria { get; set; }
+
     }
 }
