@@ -16,11 +16,13 @@ namespace SisProdutos
     {
         private IMapper _mapper;
         private UserContext _context;
+        private ProdutoControllerFunctions ProdutoFunctions;
 
         public ProdutoController(IMapper mapper, UserContext context)
         {
             _mapper = mapper;
             _context = context;
+            ProdutoFunctions = new ProdutoControllerFunctions();
         }
 
         [HttpPost]
@@ -60,16 +62,20 @@ namespace SisProdutos
             return Ok(produtoDto);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult RecuperaProdutoPorId(int id)
+        [HttpGet("{Nome?}/{PalavraChave?}/{Descricao?}")]
+        public IActionResult RecuperaProdutoPorNome(string Nome = null, string PalavraChave = null, string Descricao = null)
         {
-            Produto produto = _context.Produtos.FirstOrDefault(produto => produto.Id == id);
-            if (produto != null)
+            List<Produto> produtoList = new List<Produto>();
+
+            //para caso um deles for null
+            produtoList = ProdutoFunctions.AjustarProdutoList(produtoList, Nome, PalavraChave, Descricao, _context);
+
+
+            if (produtoList.Count == 0)
             {
-                ReadProdutoDto produtoDto = _mapper.Map<ReadProdutoDto>(produto);
-                return Ok(produtoDto);
+                return NotFound();
             }
-            return NotFound();
+            return Ok(produtoList);
         }
 
 
