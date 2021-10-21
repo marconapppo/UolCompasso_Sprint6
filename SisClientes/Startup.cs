@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace SisClientes
@@ -28,21 +28,16 @@ namespace SisClientes
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews()
-                .AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
-            services.AddHttpClient();
-            //services.AddDbContext<CidadeContexto>(opts => opts.UseMySQL(Configuration.GetConnectionString("CidadeConnection")));
+            services.AddDbContext<PaisContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UsuarioConnection")
+                ));
             services.AddControllers();
-
-            //services.AddDbContext<CidadeContexto>(opt =>
-            //                                   opt.UseInMemoryDatabase("SPRINT05_CIDADES_CLIENTES"));
+            services.AddHttpClient();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sprint05_API_Cidade", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SisClientes", Version = "v1" });
             });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,7 +47,7 @@ namespace SisClientes
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sprint05_API_Cidade v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SisClientes v1"));
             }
 
             app.UseHttpsRedirection();

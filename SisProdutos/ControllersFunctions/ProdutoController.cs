@@ -13,7 +13,8 @@ namespace SisProdutos
     
     public class ProdutoControllerFunctions
     {
-        public List<Produto> AjustarProdutoList(List<Produto> produtoList, string Nome , string PalavraChave , string Descricao , UserContext _context)
+        public List<Produto> AjustarProdutoList(List<Produto> produtoList, string Nome ,
+            string PalavraChave , string Descricao, string Categoria, bool? AscPreco , UserContext _context)
         {
             if (Nome != null)
             {
@@ -28,6 +29,17 @@ namespace SisProdutos
             if (Descricao != null)
             {
                 produtoList = produtoList.Where(produto => produto.Descricao == Descricao).ToList();
+            }
+
+            if (Categoria != null)
+            {
+                produtoList = produtoList.Where(produto => produto.Categoria == Categoria).ToList();
+            }
+
+            if (AscPreco != null)
+            {
+                if(AscPreco == true) { produtoList = produtoList.OrderBy(produto => produto.Preco).ToList(); }
+                if(AscPreco == false) { produtoList = produtoList.OrderByDescending(produto => produto.Preco).ToList(); }
             }
             return produtoList;
         }

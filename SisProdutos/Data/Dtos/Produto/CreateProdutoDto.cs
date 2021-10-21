@@ -11,9 +11,9 @@ namespace SisProdutos
         [Required]
         public string Nome { get; set; }
         [Required]
-        public string Descicao { get; set; }
+        public string Descricao { get; set; }
         [Required]
-        public decimal Preco { get; set; }
+        public float Preco { get; set; }
         [Required]
         public string PalavraChave { get; set; }
         [Required]

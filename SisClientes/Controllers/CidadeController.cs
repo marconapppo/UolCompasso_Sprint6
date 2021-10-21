@@ -19,7 +19,7 @@ namespace SisClientes.Controllers
 
         public CidadeController(IMapper mapper, PaisContext context)
         {
-            _mapper = mapper;
+           _mapper = mapper;
             _context = context;
         }
 

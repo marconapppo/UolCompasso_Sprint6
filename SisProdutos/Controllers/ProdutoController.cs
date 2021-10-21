@@ -38,7 +38,6 @@ namespace SisProdutos
                        .OrderByDescending(p => p.Id)
                        .FirstOrDefault();
 
-            Console.WriteLine(createDto.CidadeId + " " + produto.Id);
             //inserindo na tabela associativa
             ProdutoCidade pc = new ProdutoCidade();
             pc.CidadeId = createDto.CidadeId;
@@ -62,13 +61,14 @@ namespace SisProdutos
             return Ok(produtoDto);
         }
 
-        [HttpGet("{Nome?}/{PalavraChave?}/{Descricao?}")]
-        public IActionResult RecuperaProdutoPorNome(string Nome = null, string PalavraChave = null, string Descricao = null)
+        [HttpGet("{Nome?}/{PalavraChave?}/{Descricao?}/{Categoria?}/{AscPreco?}")]
+        public IActionResult BuscaProduto(string Nome = null, string PalavraChave = null, string Descricao = null,
+            string Categoria = null, bool? AscPreco = null)
         {
             List<Produto> produtoList = new List<Produto>();
 
             //para caso um deles for null
-            produtoList = ProdutoFunctions.AjustarProdutoList(produtoList, Nome, PalavraChave, Descricao, _context);
+            produtoList = ProdutoFunctions.AjustarProdutoList(produtoList, Nome, PalavraChave, Descricao, Categoria, AscPreco, _context);
 
 
             if (produtoList.Count == 0)
