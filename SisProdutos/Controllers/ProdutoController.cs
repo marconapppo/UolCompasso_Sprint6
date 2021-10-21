@@ -5,7 +5,9 @@ using SisProdutos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 
 namespace SisProdutos
@@ -17,12 +19,14 @@ namespace SisProdutos
         private IMapper _mapper;
         private UserContext _context;
         private ProdutoControllerFunctions ProdutoFunctions;
+        private readonly HttpClient _httpClient;
 
-        public ProdutoController(IMapper mapper, UserContext context)
+        public ProdutoController(IMapper mapper, UserContext context, HttpClient httpClient)
         {
             _mapper = mapper;
             _context = context;
             ProdutoFunctions = new ProdutoControllerFunctions();
+            _httpClient = httpClient;
         }
 
         [HttpPost]
@@ -31,7 +35,7 @@ namespace SisProdutos
 
             Produto produto = _mapper.Map<Produto>(createDto);
             _context.Produtos.Add(produto);
-            _context.SaveChanges();
+            //_context.SaveChanges();
 
             //pegando o ultimo produto, ou seja, aquela acabado de inserir
             produto = _context.Produtos
@@ -39,15 +43,26 @@ namespace SisProdutos
                        .FirstOrDefault();
 
             //inserindo na tabela associativa
-            ProdutoCidade pc = new ProdutoCidade();
-            pc.CidadeId = createDto.CidadeId;
-            pc.ProdutoId = produto.Id;
+            List<ProdutoCidade> produtoCidadeList = new List<ProdutoCidade>();
 
-            _context.ProdutoCidades.Add(pc);
+            //cadastrando para o tamanho do vetor de cidade do produto
+            for (int i=0; i< createDto.CidadeId.Length; i++)
+            {
+                ProdutoCidade pc = new ProdutoCidade();
+                pc.ProdutoId = produto.Id;
+                pc.CidadeId = createDto.CidadeId[i];
+                produtoCidadeList.Add(pc);
+            }
+            foreach (var a in produtoCidadeList)
+            {
+                Console.WriteLine(a.ProdutoId + " " + a.CidadeId);
+            }
+            _context.ProdutoCidades.AddRange(produtoCidadeList);
             _context.SaveChanges();
 
             return Ok();
         }
+
 
         [HttpGet]
         public IActionResult GetProduto()
@@ -70,12 +85,28 @@ namespace SisProdutos
             //para caso um deles for null
             produtoList = ProdutoFunctions.AjustarProdutoList(produtoList, Nome, PalavraChave, Descricao, Categoria, AscPreco, _context);
 
-
             if (produtoList.Count == 0)
             {
                 return NotFound();
             }
             return Ok(produtoList);
+        }
+
+        [HttpGet("{idCidadeCliente}/{idProduto}")]
+        public async Task<IActionResult> GetFreteProdutoAsync(int idCidadeCliente, int idProduto)
+        {
+            //pega a cidade do cliente
+            var responseString = await _httpClient.GetStringAsync("https://localhost:5001/api/Cidade/" + idCidadeCliente);
+            var cidadeCliente = JsonConvert.DeserializeObject<Cidade>(responseString);
+            //pega produto
+
+            //retorna cidade de produto
+
+            //retorna cidade de cliente
+
+            //compara para saber se haverá frete, ou seja, cidade de cliente é diferente de produto
+            Console.WriteLine(responseString);
+            return Ok();
         }
 
 

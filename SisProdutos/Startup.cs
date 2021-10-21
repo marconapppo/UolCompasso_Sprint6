@@ -35,6 +35,7 @@ namespace SisProdutos
                 .AddIdentity<IdentityUser<int>, IdentityRole<int>>()
                 .AddEntityFrameworkStores<UserContext>();
             services.AddControllers();
+            services.AddHttpClient();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SisProdutos", Version = "v1" });
