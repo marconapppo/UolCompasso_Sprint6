@@ -44,5 +44,17 @@ namespace SisProdutos
             return produtoList;
         }
 
+        public List<Cidade> PegaCidadesProduto(UserContext _context, int idProduto)
+        {
+            var produtoCidadesList = _context.ProdutoCidades.Where(produto => produto.ProdutoId == idProduto).ToList();
+            var cidadesList = new List<Cidade>();
+            foreach (var produtoCidade in produtoCidadesList)
+            {
+                Cidade c = _context.Cidades.FirstOrDefault(cidade => cidade.Id == produtoCidade.CidadeId);
+                cidadesList.Add(c);
+            }
+            return cidadesList;
+        }
+
     }
 }

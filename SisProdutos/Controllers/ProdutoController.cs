@@ -18,14 +18,14 @@ namespace SisProdutos
     {
         private IMapper _mapper;
         private UserContext _context;
-        private ProdutoControllerFunctions ProdutoFunctions;
+        private ProdutoControllerFunctions _ProdutoFunctions;
         private readonly HttpClient _httpClient;
 
         public ProdutoController(IMapper mapper, UserContext context, HttpClient httpClient)
         {
             _mapper = mapper;
             _context = context;
-            ProdutoFunctions = new ProdutoControllerFunctions();
+            _ProdutoFunctions = new ProdutoControllerFunctions();
             _httpClient = httpClient;
         }
 
@@ -35,7 +35,7 @@ namespace SisProdutos
 
             Produto produto = _mapper.Map<Produto>(createDto);
             _context.Produtos.Add(produto);
-            //_context.SaveChanges();
+            _context.SaveChanges();
 
             //pegando o ultimo produto, ou seja, aquela acabado de inserir
             produto = _context.Produtos
@@ -52,10 +52,6 @@ namespace SisProdutos
                 pc.ProdutoId = produto.Id;
                 pc.CidadeId = createDto.CidadeId[i];
                 produtoCidadeList.Add(pc);
-            }
-            foreach (var a in produtoCidadeList)
-            {
-                Console.WriteLine(a.ProdutoId + " " + a.CidadeId);
             }
             _context.ProdutoCidades.AddRange(produtoCidadeList);
             _context.SaveChanges();
@@ -83,7 +79,7 @@ namespace SisProdutos
             List<Produto> produtoList = new List<Produto>();
 
             //para caso um deles for null
-            produtoList = ProdutoFunctions.AjustarProdutoList(produtoList, Nome, PalavraChave, Descricao, Categoria, AscPreco, _context);
+            produtoList = _ProdutoFunctions.AjustarProdutoList(produtoList, Nome, PalavraChave, Descricao, Categoria, AscPreco, _context);
 
             if (produtoList.Count == 0)
             {
@@ -95,18 +91,27 @@ namespace SisProdutos
         [HttpGet("{idCidadeCliente}/{idProduto}")]
         public async Task<IActionResult> GetFreteProdutoAsync(int idCidadeCliente, int idProduto)
         {
-            //pega a cidade do cliente
-            var responseString = await _httpClient.GetStringAsync("https://localhost:5001/api/Cidade/" + idCidadeCliente);
-            var cidadeCliente = JsonConvert.DeserializeObject<Cidade>(responseString);
-            //pega produto
-
-            //retorna cidade de produto
-
-            //retorna cidade de cliente
-
-            //compara para saber se haverá frete, ou seja, cidade de cliente é diferente de produto
-            Console.WriteLine(responseString);
-            return Ok();
+            try
+            {
+                //pega o preço do produto
+                var precoProduto = _context.Produtos.Where(p => p.Id == idProduto).Select(produto => produto.Preco).FirstOrDefault();
+                precoProduto = (float)Math.Round(precoProduto);
+                //pega a cidade do cliente
+                var responseString = await _httpClient.GetStringAsync("https://localhost:5001/api/Cidade/" + idCidadeCliente);
+                var cidadeCliente = JsonConvert.DeserializeObject<Cidade>(responseString);
+                //pega as cidades do produto
+                var cidadesList = _ProdutoFunctions.PegaCidadesProduto(_context, idProduto);
+                //compara para saber se haverá frete, ou seja, cidade de cliente é diferente de produto
+                foreach (var cidadeProduto in cidadesList)
+                {
+                    if (cidadeProduto.Nome == cidadeCliente.Nome) { return Ok("Sem frete, Valor:" + precoProduto.ToString("n2")); }
+                }
+                return Ok("Frete de R$ 29,90, Valor:" + (precoProduto+29.90).ToString("n2"));
+            }
+            catch(Exception e)
+            {
+                return NotFound();
+            }
         }
 
 

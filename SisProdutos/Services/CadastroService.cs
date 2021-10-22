@@ -20,10 +20,11 @@ namespace SisProdutos
             _userManager = userManager;
         }
 
-        public Result CadastraUsuario(CreateUsuarioDto createDto)
+        public Result CadastraUsuario(CreateUsuarioDto createDto, int idCliente)
         {
             Usuario usuario = _mapper.Map<Usuario>(createDto);
             IdentityUser<int> usuarioIdentity = _mapper.Map<IdentityUser<int>>(usuario);
+            //usuarioIdentity.Id = 3;
             Task<IdentityResult> resultadoIdentity = _userManager.CreateAsync(usuarioIdentity, createDto.Password);
             if (resultadoIdentity.Result.Succeeded) return Result.Ok();
             return Result.Fail("Falha ao cadastrar usuário");

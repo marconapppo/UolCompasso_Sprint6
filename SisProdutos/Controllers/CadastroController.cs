@@ -20,10 +20,10 @@ namespace SisProdutos
             _cadastroService = cadastroService;
         }
 
-        [HttpPost]
-        public IActionResult CadastraUsuario(CreateUsuarioDto createDto)
+        [HttpPost("{idCliente}")]
+        public IActionResult CadastraUsuario(CreateUsuarioDto createDto,int idCliente)
         {
-            Result resultado = _cadastroService.CadastraUsuario(createDto);
+            Result resultado = _cadastroService.CadastraUsuario(createDto, idCliente);
             if (resultado.IsFailed) return BadRequest(resultado.Errors);
             return Ok();
         }
