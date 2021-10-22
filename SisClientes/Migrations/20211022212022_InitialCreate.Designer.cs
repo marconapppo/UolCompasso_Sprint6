@@ -10,7 +10,7 @@ using SisClientes;
 namespace SisClientes.Migrations
 {
     [DbContext(typeof(PaisContext))]
-    [Migration("20211021180356_InitialCreate")]
+    [Migration("20211022212022_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

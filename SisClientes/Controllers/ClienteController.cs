@@ -26,9 +26,10 @@ namespace SisClientes.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateClienteAsync([FromBody] CreateClienteDTO clienteDTO)
+        [HttpPost("{idCliente?}")]
+        public async Task<IActionResult> CreateClienteAsync([FromBody] CreateClienteDTO clienteDTO, int? idCliente = null)
         {
+            Console.WriteLine(idCliente);
             //validando cliente
             var validator = new CreateClienteValidator();
             ValidationResult results = validator.Validate(clienteDTO);
@@ -47,8 +48,11 @@ namespace SisClientes.Controllers
             {
                 //cadastrando cliente
                 Cliente cliente = _mapper.Map<Cliente>(clienteDTO);
+                if(idCliente != null) { cliente.Id = int.Parse(idCliente.ToString()); }
+                Console.WriteLine(cliente.Id);
                 //o dto nao possui  cidadeId, então eu insero direto
                 cliente.CidadeId = cidade.Id;
+                //_context.Database.AutoTransactionsEnabled;
                 _context.Clientes.Add(cliente);
                 _context.SaveChanges();
                 return RecuperaClientePorId(cliente.Id);

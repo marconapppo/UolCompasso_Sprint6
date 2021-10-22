@@ -6,7 +6,6 @@ namespace SisProdutos
 {
     public class Usuario
     {
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Username { get; set; }
     }
