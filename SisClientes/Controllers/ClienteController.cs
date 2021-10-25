@@ -18,18 +18,20 @@ namespace SisClientes.Controllers
         private PaisContext _context;
         private IMapper _mapper;
         private readonly HttpClient _httpClient;
+        private ClienteControllerFunctions _clienteFunctions;
+
 
         public ClienteController(IMapper mapper, HttpClient httpClient, PaisContext context)
         {
             _mapper = mapper;
             _httpClient = httpClient;
             _context = context;
+            _clienteFunctions = new ClienteControllerFunctions();
         }
 
         [HttpPost("{idCliente?}")]
         public async Task<IActionResult> CreateClienteAsync([FromBody] CreateClienteDTO clienteDTO, int? idCliente = null)
         {
-            Console.WriteLine(idCliente);
             //validando cliente
             var validator = new CreateClienteValidator();
             ValidationResult results = validator.Validate(clienteDTO);
@@ -37,11 +39,7 @@ namespace SisClientes.Controllers
             if (!results.IsValid) { return BadRequest(failures); }
             //pegando a cidade da pessoa pelo CEP, utilizando o site abaixo
             clienteDTO.Cep = clienteDTO.Cep.Replace("-", "");
-            var responseString = await _httpClient.GetStringAsync("https://viacep.com.br/ws/" + clienteDTO.Cep + "/json/");
-            var catalog = JsonConvert.DeserializeObject<CatalogCep>(responseString);
-            //recebendo valores de cidade e catalog, e caso logradouro ou bairro seja null, insere o que veio no corpo
-            if (!string.IsNullOrEmpty(catalog.logradouro)) { clienteDTO.Logradouro = catalog.logradouro; }
-            if (!string.IsNullOrEmpty(catalog.bairro)) { clienteDTO.Bairro = catalog.bairro; }
+            var catalog = await _clienteFunctions.GetCepPeloSiteAsync(clienteDTO.Cep, clienteDTO.Logradouro, clienteDTO.Bairro, _httpClient);
             //cruzando os valores de cidade com os do banco
             Cidade cidade = _context.Cidades.FirstOrDefault(cidade => cidade.Nome == catalog.localidade);
             if (cidade != null)
@@ -49,12 +47,10 @@ namespace SisClientes.Controllers
                 //cadastrando cliente
                 Cliente cliente = _mapper.Map<Cliente>(clienteDTO);
                 if(idCliente != null) { cliente.Id = int.Parse(idCliente.ToString()); }
-                Console.WriteLine(cliente.Id);
-                //o dto nao possui  cidadeId, então eu insero direto
-                cliente.CidadeId = cidade.Id;
-                //_context.Database.AutoTransactionsEnabled;
                 _context.Clientes.Add(cliente);
                 _context.SaveChanges();
+                //inserindo na tabela associativa
+                await _clienteFunctions.InserindoAssociativaCLienteCidadeAsync(cliente.Id,cidade.Id,clienteDTO.CepOpcionais, _context,_httpClient);
                 return RecuperaClientePorId(cliente.Id);
             }
             return NotFound();
@@ -95,11 +91,7 @@ namespace SisClientes.Controllers
             if (!results.IsValid) { return BadRequest(failures); }
             //pegando a cidade da pessoa pelo CEP, utilizando o site abaixo
             clienteDto.Cep = clienteDto.Cep.Replace("-", "");
-            var responseString = await _httpClient.GetStringAsync("https://viacep.com.br/ws/" + clienteDto.Cep + "/json/");
-            var catalog = JsonConvert.DeserializeObject<CatalogCep>(responseString);
-            //recebendo valores de cidade e catalog, e caso logradouro ou bairro seja null, insere o que veio no corpo
-            if (!string.IsNullOrEmpty(catalog.logradouro)) { clienteDto.Logradouro = catalog.logradouro; }
-            if (!string.IsNullOrEmpty(catalog.bairro)) { clienteDto.Bairro = catalog.bairro; }
+            var catalog = await _clienteFunctions.GetCepPeloSiteAsync(clienteDto.Cep, clienteDto.Logradouro, clienteDto.Bairro, _httpClient);
             //autalizando cliente
             Cliente cliente = _context.Clientes.FirstOrDefault(cliente => cliente.Id == id);
             if (cliente == null)
@@ -111,10 +103,10 @@ namespace SisClientes.Controllers
             if (cidade != null)
             {
                 //o dto nao possui  cidadeId, então eu insero direto
-                cliente.CidadeId = cidade.Id;
                 //alterando valores de cliente
                 _mapper.Map(clienteDto, cliente);
                 _context.SaveChanges();
+
                 return RecuperaClientePorId(cliente.Id);
             }
             return NotFound();

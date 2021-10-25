@@ -12,8 +12,6 @@ namespace SisClientes
 
         public DateTime DataNascimento { get; set; }
 
-        public int CidadeId { get; set; }
-
         public string Cep { get; set; }
 
         public string Logradouro { get; set; }

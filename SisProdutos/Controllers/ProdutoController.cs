@@ -107,7 +107,7 @@ namespace SisProdutos
                 {
                     if (cidadeProduto.Nome == cidadeCliente.Nome) { resposta = "Sem frete, Valor:" + precoProduto.ToString("n2"); }
                 }
-                //criando produto
+                //criando tabela Associativa ClienteProduto
                 ClienteProduto clienteProduto = new ClienteProduto(1,idProduto,null);
                 //registrando em auditoria
                 var stringContent = new StringContent(JsonConvert.SerializeObject(clienteProduto), Encoding.UTF8, "application/json");

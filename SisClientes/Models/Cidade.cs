@@ -9,6 +9,5 @@ namespace SisClientes
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Estado { get; set; }
-        public List<Cliente> Clientes { get; set; }
     }
 }

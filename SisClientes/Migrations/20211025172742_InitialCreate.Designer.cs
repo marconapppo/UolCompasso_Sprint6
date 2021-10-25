@@ -10,7 +10,7 @@ using SisClientes;
 namespace SisClientes.Migrations
 {
     [DbContext(typeof(PaisContext))]
-    [Migration("20211022212022_InitialCreate")]
+    [Migration("20211025172742_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,9 +52,6 @@ namespace SisClientes.Migrations
                     b.Property<string>("Cep")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CidadeId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DataNascimento")
                         .HasColumnType("datetime2");
 
@@ -66,25 +63,51 @@ namespace SisClientes.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CidadeId");
-
                     b.ToTable("Clientes");
                 });
 
-            modelBuilder.Entity("SisClientes.Cliente", b =>
+            modelBuilder.Entity("SisClientes.ClienteCidade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CidadeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Principal")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CidadeId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("ClienteCidade");
+                });
+
+            modelBuilder.Entity("SisClientes.ClienteCidade", b =>
                 {
                     b.HasOne("SisClientes.Cidade", "Cidade")
-                        .WithMany("Clientes")
+                        .WithMany()
                         .HasForeignKey("CidadeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cidade");
-                });
+                    b.HasOne("SisClientes.Cliente", "cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("SisClientes.Cidade", b =>
-                {
-                    b.Navigation("Clientes");
+                    b.Navigation("Cidade");
+
+                    b.Navigation("cliente");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,6 +17,7 @@ namespace SisClientes
                 .WithMessage("O campo logradouro é obrigatório");
             RuleFor(x => x.Bairro).NotEmpty()
                 .WithMessage("O campo bairro é obrigatório");
+            RuleFor(x => x.CepOpcionais).NotEmpty().WithMessage("O Campo CidadeDic é obrigatório");
         }
     }
 }
