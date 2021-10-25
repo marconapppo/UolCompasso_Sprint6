@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-
+using System.Text;
 
 namespace SisProdutos
 {
@@ -56,7 +56,7 @@ namespace SisProdutos
             _context.ProdutoCidades.AddRange(produtoCidadeList);
             _context.SaveChanges();
 
-            return Ok();
+            return CreatedAtAction(nameof(GetProduto), new { id = produto.Id }, produto);
         }
 
 
@@ -96,6 +96,7 @@ namespace SisProdutos
                 //pega o preço do produto
                 var precoProduto = _context.Produtos.Where(p => p.Id == idProduto).Select(produto => produto.Preco).FirstOrDefault();
                 precoProduto = (float)Math.Round(precoProduto);
+                string resposta = "Frete de R$ 29,90, Valor:" + (precoProduto + 29.90).ToString("n2");
                 //pega a cidade do cliente
                 var responseString = await _httpClient.GetStringAsync("https://localhost:5001/api/Cidade/" + idCidadeCliente);
                 var cidadeCliente = JsonConvert.DeserializeObject<Cidade>(responseString);
@@ -104,9 +105,14 @@ namespace SisProdutos
                 //compara para saber se haverá frete, ou seja, cidade de cliente é diferente de produto
                 foreach (var cidadeProduto in cidadesList)
                 {
-                    if (cidadeProduto.Nome == cidadeCliente.Nome) { return Ok("Sem frete, Valor:" + precoProduto.ToString("n2")); }
+                    if (cidadeProduto.Nome == cidadeCliente.Nome) { resposta = "Sem frete, Valor:" + precoProduto.ToString("n2"); }
                 }
-                return Ok("Frete de R$ 29,90, Valor:" + (precoProduto+29.90).ToString("n2"));
+                //criando produto
+                ClienteProduto clienteProduto = new ClienteProduto(1,idProduto,null);
+                //registrando em auditoria
+                var stringContent = new StringContent(JsonConvert.SerializeObject(clienteProduto), Encoding.UTF8, "application/json");
+                await _httpClient.PostAsync("https://localhost:7001/api/Auditoria", stringContent);
+                return Ok(resposta);
             }
             catch(Exception e)
             {

@@ -90,6 +90,10 @@
               "target": "Package",
               "version": "[6.13.1, )"
             },
+            "MongoDB.Bson": {
+              "target": "Package",
+              "version": "[2.13.2, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.2, )"
