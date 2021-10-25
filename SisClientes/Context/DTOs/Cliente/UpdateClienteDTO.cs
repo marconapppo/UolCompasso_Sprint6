@@ -15,5 +15,7 @@ namespace SisClientes
         public string Logradouro { get; set; }
 
         public string Bairro { get; set; }
+
+        public List<CidadeCep> CepOpcionais { get; set; }
     }
 }

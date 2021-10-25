@@ -35,7 +35,7 @@ namespace SisClientes.Controllers
             Cidade cidade = _mapper.Map<Cidade>(cidadeDTO);
             _context.Cidades.Add(cidade);
             _context.SaveChanges();
-            return RecuperaCidadePorId(cidade.Id);
+            return CreatedAtAction(nameof(RecuperaCidadePorId), new { id = cidade.Id }, cidade);
         }
 
         [HttpGet]

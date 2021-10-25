@@ -50,8 +50,10 @@ namespace SisClientes.Controllers
                 _context.Clientes.Add(cliente);
                 _context.SaveChanges();
                 //inserindo na tabela associativa
-                await _clienteFunctions.InserindoAssociativaCLienteCidadeAsync(cliente.Id,cidade.Id,clienteDTO.CepOpcionais, _context,_httpClient);
-                return RecuperaClientePorId(cliente.Id);
+                var clienteCidadeList = await _clienteFunctions.GetAssociativaCLienteCidadeAsync(cliente.Id,cidade.Id,clienteDTO.CepOpcionais, _context,_httpClient);
+                _context.ClienteCidade.AddRange(clienteCidadeList);
+                _context.SaveChanges();
+                return CreatedAtAction(nameof(RecuperaClientePorId), new { id = cliente.Id }, cliente);
             }
             return NotFound();
         }

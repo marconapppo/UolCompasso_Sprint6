@@ -23,17 +23,16 @@ namespace SisClientes
             if (!string.IsNullOrEmpty(catalog.bairro)) { bairro = catalog.bairro; }
             return catalog;
         }
-        public async Task InserindoAssociativaCLienteCidadeAsync(int clienteId, int cidadeIdPrincipal, List<CidadeCep> CepOpcionais, PaisContext _context, HttpClient _httpClient)
+        public async Task<List<ClienteCidade>> GetAssociativaCLienteCidadeAsync(int clienteId, int cidadeIdPrincipal, List<CidadeCep> CepOpcionais, PaisContext _context, HttpClient _httpClient)
         {
             //inserindo no banco a cidade principal
             ClienteCidade clienteCidadePrincipal = new ClienteCidade();
             clienteCidadePrincipal.ClienteId = clienteId;
             clienteCidadePrincipal.CidadeId = cidadeIdPrincipal;
             clienteCidadePrincipal.Principal = true;
-            _context.ClienteCidade.Add(clienteCidadePrincipal);
-            _context.SaveChanges();
             //pega o nome das cidades pelos CEPs e colocar numa lista de cidades
             List<ClienteCidade> clienteCidadeList = new List<ClienteCidade>();
+            clienteCidadeList.Add(clienteCidadePrincipal);
             foreach (var cidadeCep in CepOpcionais)
             {
                 //pega o nome das cidade
@@ -48,9 +47,7 @@ namespace SisClientes
                 clienteCidade.Principal = false;
                 clienteCidadeList.Add(clienteCidade);
             }
-            //insere no banco
-            _context.ClienteCidade.AddRange(clienteCidadeList);
-            _context.SaveChanges();
+            return clienteCidadeList;
         }
 
     }
