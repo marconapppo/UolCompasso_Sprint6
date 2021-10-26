@@ -30,20 +30,6 @@ namespace SisProdutos
             //return Ok(resultado.Successes);
         }
 
-        [HttpGet]
-        [Authorize]
-        public void teste()
-        {
-            //var user = UserRepository.Get("batman", "robin");
-            //string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            Console.WriteLine(User.Identity.Name);
-            //Console.WriteLine(userId);
-        }
-
-        [HttpGet]
-        [Route("authenticated")]
-        [Authorize]
-        public string Authenticated() => String.Format("Autenticado - {0}", User.Identity.Name);
 
     }
 }

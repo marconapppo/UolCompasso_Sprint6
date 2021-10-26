@@ -30,26 +30,41 @@ namespace SisProdutos
         }
 
         [HttpPost()]
-        public async Task<IActionResult> CadastraUsuarioAsync(CreateUsuarioClienteDto createUsuarioClienteDto)
+        public async Task<IActionResult> CadastraUsuarioAsync(CreateUsuarioDto createUsuarioDto)
         {
             //criando usuario
-            CreateUsuarioDto createUsuarioDto = _mapper.Map<CreateUsuarioDto>(createUsuarioClienteDto);
             Result resultado = _cadastroService.CadastraUsuario(createUsuarioDto);
             if (resultado.IsFailed) return BadRequest(resultado.Errors);
-            else { return Ok(); }
-            //pegando o usuario criado
-            var usuario = _cadastroService.RetornaUsuarioAsync(createUsuarioDto.Username);
-            //criando cliente
-            CreateClienteDto createClienteDto = _mapper.Map<CreateClienteDto>(createUsuarioClienteDto);
-            var stringContent = new StringContent(JsonConvert.SerializeObject(createUsuarioClienteDto), Encoding.UTF8, "application/json");
-            //mandando resquest para criar cliente em SisCliente
-            var responseString = await _httpClient.PostAsync("https://localhost:5001/api/Cliente/" + usuario.Id, stringContent);
+            ////pegando o usuario criado
+            var usuarioIdentity = _cadastroService.RetornaUsuarioAsync(createUsuarioDto.Username);
+            //pequena conversão para retornar ao usuario somente id e nome
+            Usuario usuario = new Usuario();
+            usuario.Id = usuarioIdentity.Id;
+            usuario.Username = usuarioIdentity.UserName;
+            return CreatedAtAction(nameof(GetUsuario), new { nomeUsuario = usuario.Username }, usuario);
+ 
 
-            if (responseString.IsSuccessStatusCode) { return Ok(); }
-            return NotFound();
+            
+            ////criando cliente
+            //CreateClienteDto createClienteDto = _mapper.Map<CreateClienteDto>(createUsuarioClienteDto);
+            //var stringContent = new StringContent(JsonConvert.SerializeObject(createUsuarioClienteDto), Encoding.UTF8, "application/json");
+            ////mandando resquest para criar cliente em SisCliente
+            //var responseString = await _httpClient.PostAsync("https://localhost:5001/api/Cliente/" + usuario.Id, stringContent);
+
+            //if (responseString.IsSuccessStatusCode) { return Ok(); }
+            //return NotFound();
         }
 
-
+        [HttpGet("{nomeUsuario}")]
+        public IActionResult GetUsuario(string nomeUsuario)
+        {
+            var usuarioIdentity = _cadastroService.RetornaUsuarioAsync(nomeUsuario);
+            //pequena conversão para retornar ao usuario somente id e nome
+            Usuario usuario = new Usuario();
+            usuario.Id = usuarioIdentity.Id;
+            usuario.Username = usuarioIdentity.UserName;
+            return Ok(usuario);
+        }
         
     }
 }
