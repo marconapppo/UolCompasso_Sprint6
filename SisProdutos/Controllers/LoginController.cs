@@ -1,10 +1,7 @@
-﻿using FluentResults;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 
 namespace SisProdutos
@@ -15,8 +12,7 @@ namespace SisProdutos
     {
         private LoginService _loginService;
 
-
-        public LoginController(LoginService loginService, HttpContext httpContext)
+        public LoginController(LoginService loginService)
         {
             _loginService = loginService;
         }
@@ -24,15 +20,30 @@ namespace SisProdutos
         [HttpPost]
         public IActionResult LogaUsuario(LoginRequest request)
         {
-            Result resultado = _loginService.LogaUsuario(request);
-            if (resultado.IsFailed) return Unauthorized(resultado.Errors);
-            return Ok(resultado.Successes);
+
+            var token = _loginService.GenerateToken(request);
+            Console.WriteLine(User.Identity.Name);
+            return Ok(token);
+
+            //Result resultado = _loginService.LogaUsuario(request);
+            //if (resultado.IsFailed) return Unauthorized(resultado.Errors);
+            //return Ok(resultado.Successes);
         }
 
         [HttpGet]
+        [Authorize]
         public void teste()
         {
-            //Console.WriteLine(_httpContext.User.Identity.IsAuthenticated);
+            //var user = UserRepository.Get("batman", "robin");
+            //string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Console.WriteLine(User.Identity.Name);
+            //Console.WriteLine(userId);
         }
+
+        [HttpGet]
+        [Route("authenticated")]
+        [Authorize]
+        public string Authenticated() => String.Format("Autenticado - {0}", User.Identity.Name);
+
     }
 }

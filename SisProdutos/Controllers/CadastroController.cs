@@ -44,6 +44,7 @@ namespace SisProdutos
             var stringContent = new StringContent(JsonConvert.SerializeObject(createUsuarioClienteDto), Encoding.UTF8, "application/json");
             //mandando resquest para criar cliente em SisCliente
             var responseString = await _httpClient.PostAsync("https://localhost:5001/api/Cliente/" + usuario.Id, stringContent);
+
             if (responseString.IsSuccessStatusCode) { return Ok(); }
             return NotFound();
         }
