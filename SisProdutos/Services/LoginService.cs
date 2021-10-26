@@ -1,18 +1,24 @@
 using FluentResults;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SisProdutos;
+using System;
 using System.Linq;
 
 public class LoginService
     {
         private SignInManager<IdentityUser<int>> _signInManager;
         private TokenService _tokenService;
+        private HttpContext _httpContext;
+
+
 
         public LoginService(SignInManager<IdentityUser<int>> signInManager,
-            TokenService tokenService)
+            TokenService tokenService, HttpContext httpContext)
         {
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _httpContext = httpContext;
         }
 
         public Result LogaUsuario(LoginRequest request)
@@ -31,5 +37,6 @@ public class LoginService
                 return Result.Ok().WithSuccess(token.Value);
             }
             return Result.Fail("Login falhou");
+            
         }
     }

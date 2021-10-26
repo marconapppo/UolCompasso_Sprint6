@@ -19,16 +19,32 @@ namespace Auditoria.Controllers
         [HttpPost]
         public void PostPedido([FromBody] ClienteProduto clienteProduto)
         {
-
             //conectando no mongo
             mongo.ConectandoBanco();
             //inserindo no mongo
             mongo.InserindoBanco(clienteProduto);
+        }
 
+        [HttpGet]
+        public string GetPedido()
+        {
+            //conectando no banco
+            mongo.ConectandoBanco();
+            //retornando os valores de Pedido
+            var clienteProduto = mongo.retornandoBanco();
+
+            //adicionando no array items
+            var docArray = new BsonArray(); 
+            foreach (var row in clienteProduto)
+            {
+                //docArray.Add(BsonDocument.Parse(pedidos.ToJson<Pedido>()));
+                docArray.Add(BsonDocument.Parse(row.ToJson<ClienteProduto>()));
+            }
+            return docArray.ToJson();
         }
 
         
 
-        
+
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SisProdutos
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class LogoutController : ControllerBase
     {
         private LogoutService _logoutService;

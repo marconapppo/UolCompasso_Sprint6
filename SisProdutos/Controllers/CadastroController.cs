@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace SisProdutos
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CadastroController : ControllerBase
     {
         private CadastroService _cadastroService;
@@ -36,16 +36,19 @@ namespace SisProdutos
             CreateUsuarioDto createUsuarioDto = _mapper.Map<CreateUsuarioDto>(createUsuarioClienteDto);
             Result resultado = _cadastroService.CadastraUsuario(createUsuarioDto);
             if (resultado.IsFailed) return BadRequest(resultado.Errors);
+            else { return Ok(); }
             //pegando o usuario criado
             var usuario = _cadastroService.RetornaUsuarioAsync(createUsuarioDto.Username);
             //criando cliente
             CreateClienteDto createClienteDto = _mapper.Map<CreateClienteDto>(createUsuarioClienteDto);
             var stringContent = new StringContent(JsonConvert.SerializeObject(createUsuarioClienteDto), Encoding.UTF8, "application/json");
-            Console.WriteLine(usuario.Id);
             //mandando resquest para criar cliente em SisCliente
             var responseString = await _httpClient.PostAsync("https://localhost:5001/api/Cliente/" + usuario.Id, stringContent);
             if (responseString.IsSuccessStatusCode) { return Ok(); }
             return NotFound();
         }
+
+
+        
     }
 }

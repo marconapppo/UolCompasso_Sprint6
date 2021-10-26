@@ -13,7 +13,7 @@ using System.Text;
 namespace SisProdutos
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
         private IMapper _mapper;
@@ -72,8 +72,8 @@ namespace SisProdutos
             return Ok(produtoDto);
         }
 
-        [HttpGet("{Nome?}/{PalavraChave?}/{Descricao?}/{Categoria?}/{AscPreco?}")]
-        public IActionResult BuscaProduto(string Nome = null, string PalavraChave = null, string Descricao = null,
+        [HttpGet("{filtro}")]
+        public IActionResult BuscaProduto([FromQuery] string Nome = null, string PalavraChave = null, string Descricao = null,
             string Categoria = null, bool? AscPreco = null)
         {
             List<Produto> produtoList = new List<Produto>();

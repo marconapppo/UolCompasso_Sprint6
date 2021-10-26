@@ -1,4 +1,5 @@
 ﻿using FluentResults;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ using System.Threading.Tasks;
 namespace SisProdutos
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
         private LoginService _loginService;
 
-        public LoginController(LoginService loginService)
+
+        public LoginController(LoginService loginService, HttpContext httpContext)
         {
             _loginService = loginService;
         }
@@ -25,6 +27,12 @@ namespace SisProdutos
             Result resultado = _loginService.LogaUsuario(request);
             if (resultado.IsFailed) return Unauthorized(resultado.Errors);
             return Ok(resultado.Successes);
+        }
+
+        [HttpGet]
+        public void teste()
+        {
+            //Console.WriteLine(_httpContext.User.Identity.IsAuthenticated);
         }
     }
 }
