@@ -74,3 +74,4 @@ C:\Users\gabri\source\repos\Sprint06\SisClientes\obj\Debug\net5.0\SisClientes.pd
 C:\Users\gabri\source\repos\Sprint06\SisClientes\obj\Debug\net5.0\SisClientes.genruntimeconfig.cache
 C:\Users\gabri\source\repos\Sprint06\SisClientes\bin\Debug\net5.0\StaticDotNet.EntityFrameworkCore.ModelConfiguration.dll
 C:\Users\gabri\source\repos\Sprint06\SisClientes\bin\Debug\net5.0\StaticDotNet.ParameterValidation.dll
+C:\Users\gabri\source\repos\Sprint06\SisClientes\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

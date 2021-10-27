@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 
@@ -29,8 +31,9 @@ namespace SisClientes.Controllers
             _clienteFunctions = new ClienteControllerFunctions();
         }
 
-        [HttpPost("{idCliente?}")]
-        public async Task<IActionResult> CreateClienteAsync([FromBody] CreateClienteDTO clienteDTO, int? idCliente = null)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateClienteAsync([FromBody] CreateClienteDTO clienteDTO)
         {
             //validando cliente
             var validator = new CreateClienteValidator();
@@ -46,7 +49,14 @@ namespace SisClientes.Controllers
             {
                 //cadastrando cliente
                 Cliente cliente = _mapper.Map<Cliente>(clienteDTO);
-                if(idCliente != null) { cliente.Id = int.Parse(idCliente.ToString()); }
+                //pegando usuario
+                var responseString = await _httpClient.GetStringAsync("https://localhost:6002/api/Cadastro/" + User.Identity.Name);
+                var usuario = JsonConvert.DeserializeObject<Usuario>(responseString);
+                //conferindo caso exista um cliente ja cadastrado
+                if (_context.Clientes.FirstOrDefault(cliente => cliente.Id == usuario.Id) != null) { return Conflict(); }
+                //trocando id do cliente para o msm do usuario
+                cliente.Id = usuario.Id;
+                //salvando no banco o cliente
                 _context.Clientes.Add(cliente);
                 _context.SaveChanges();
                 //inserindo na tabela associativa

@@ -65,6 +65,6 @@ namespace SisProdutos
             usuario.Username = usuarioIdentity.UserName;
             return Ok(usuario);
         }
-        
+
     }
 }
