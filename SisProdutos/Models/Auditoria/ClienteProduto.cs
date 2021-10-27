@@ -11,12 +11,6 @@ namespace SisProdutos
     [BsonIgnoreExtraElements]
     public class ClienteProduto
     {
-        public ClienteProduto(int idCliente, int idProduto, List<string> errosList)
-        {
-            IdCliente = idCliente;
-            IdProduto = idProduto;
-            ErrosList = errosList;
-        }
 
         public int IdCliente { get; set; }
         public int IdProduto { get; set; }

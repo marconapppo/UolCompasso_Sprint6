@@ -19,6 +19,6 @@ namespace SisProdutos
         [Required]
         public string Categoria { get; set; }
         [Required]
-        public int[] CidadeId { get; set; }
+        public List<string> CepOpcionais { get; set; }
     }
 }

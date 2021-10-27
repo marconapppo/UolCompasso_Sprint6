@@ -3,9 +3,11 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SisClientes.Controllers
@@ -16,11 +18,13 @@ namespace SisClientes.Controllers
     {
         private PaisContext _context;
         private IMapper _mapper;
+        private readonly HttpClient _httpClient;
 
-        public CidadeController(IMapper mapper, PaisContext context)
+        public CidadeController(IMapper mapper, PaisContext context, HttpClient httpClient)
         {
            _mapper = mapper;
             _context = context;
+            _httpClient = httpClient;
         }
 
         [HttpPost]
@@ -60,6 +64,30 @@ namespace SisClientes.Controllers
                 return Ok(cidadeDto);
             }
             return NotFound();
+        }
+
+        [HttpGet("cep/{cep}")]
+        public async Task<IActionResult> RecuperaCidadePorCepAsync(string cep)
+        {
+            try
+            {
+                //pega o nome da cidade
+                var responseString = await _httpClient.GetStringAsync("https://viacep.com.br/ws/" + cep + "/json/");
+                var catalog = JsonConvert.DeserializeObject<CatalogCep>(responseString);
+                //cadastra cidade
+                Cidade cidade = _context.Cidades.FirstOrDefault(cidade => cidade.Nome == catalog.localidade);
+                if (cidade != null)
+                {
+                    ReadCidadeDTO cidadeDto = _mapper.Map<ReadCidadeDTO>(cidade);
+                    return Ok(cidadeDto);
+                }
+                return NotFound();
+            }
+            catch
+            {
+                return NotFound();
+            }
+            
         }
 
         [HttpPut("{id}")]

@@ -87,7 +87,6 @@ namespace SisClientes.Controllers
             if (cliente != null)
             {
                 ReadClienteDTO ClienteDto = _mapper.Map<ReadClienteDTO>(cliente);
-
                 return Ok(ClienteDto);
             }
             return NotFound();

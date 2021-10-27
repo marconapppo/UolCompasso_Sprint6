@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SisProdutos
 {
@@ -21,6 +22,7 @@ namespace SisProdutos
         private ProdutoControllerFunctions _ProdutoFunctions;
         private readonly HttpClient _httpClient;
 
+
         public ProdutoController(IMapper mapper, UserContext context, HttpClient httpClient)
         {
             _mapper = mapper;
@@ -30,33 +32,43 @@ namespace SisProdutos
         }
 
         [HttpPost]
-        public IActionResult CadastraProduto(CreateProdutoDto createDto)
+        [Authorize]
+        public async Task<IActionResult> CadastraProdutoAsync(CreateProdutoDto createDto)
         {
-
-            Produto produto = _mapper.Map<Produto>(createDto);
-            _context.Produtos.Add(produto);
-            _context.SaveChanges();
-
-            //pegando o ultimo produto, ou seja, aquela acabado de inserir
-            produto = _context.Produtos
-                       .OrderByDescending(p => p.Id)
-                       .FirstOrDefault();
-
-            //inserindo na tabela associativa
-            List<ProdutoCidade> produtoCidadeList = new List<ProdutoCidade>();
-
-            //cadastrando para o tamanho do vetor de cidade do produto
-            for (int i=0; i< createDto.CidadeId.Length; i++)
+            try
             {
-                ProdutoCidade pc = new ProdutoCidade();
-                pc.ProdutoId = produto.Id;
-                pc.CidadeId = createDto.CidadeId[i];
-                produtoCidadeList.Add(pc);
-            }
-            _context.ProdutoCidades.AddRange(produtoCidadeList);
-            _context.SaveChanges();
+                Produto produto = _mapper.Map<Produto>(createDto);
+                _context.Produtos.Add(produto);
+                _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetProduto), new { id = produto.Id }, produto);
+                //pegando o ultimo produto, ou seja, aquela acabado de inserir
+                produto = _context.Produtos
+                           .OrderByDescending(p => p.Id)
+                           .FirstOrDefault();
+
+                //inserindo na tabela associativa
+                List<ProdutoCidade> produtoCidadeList = new List<ProdutoCidade>();
+
+                //pegando Ids da lista de Ceps de cidade
+                var cidadeIdList = await _ProdutoFunctions.GetListCidadeIdsAsync(createDto.CepOpcionais, _httpClient, _context);
+
+                //cadastrando para o tamanho do vetor de cidade do produto
+                foreach (var cidadeId in cidadeIdList)
+                {
+                    ProdutoCidade pc = new ProdutoCidade();
+                    pc.ProdutoId = produto.Id;
+                    pc.CidadeId = cidadeId;
+                    produtoCidadeList.Add(pc);
+                }
+                _context.ProdutoCidades.AddRange(produtoCidadeList);
+                _context.SaveChanges();
+
+                return CreatedAtAction(nameof(GetProduto), new { id = produto.Id }, produto);
+            }
+            catch(Exception e)
+            {
+                return NotFound();
+            }
         }
 
 
@@ -88,27 +100,30 @@ namespace SisProdutos
             return Ok(produtoList);
         }
 
-        [HttpGet("{idCidadeCliente}/{idProduto}")]
-        public async Task<IActionResult> GetFreteProdutoAsync(int idCidadeCliente, int idProduto)
+        [HttpGet("compra/{idProduto}")]
+        [Authorize]
+        public async Task<IActionResult> GetFreteProdutoAsync(int idProduto)
         {
+            ClienteProduto clienteProduto = new ClienteProduto();
             try
             {
+                //pega o id da cidade principal do 
+                var usuario = _ProdutoFunctions.GetUsuario(User.Identity.Name, _context);
+                int idCliente = await _ProdutoFunctions.GetIdClienteAsync(usuario, _httpClient);
+                //colocando valores no cliente produto
+                clienteProduto.IdCliente = idCliente;
+                clienteProduto.IdProduto = idProduto;
+                int idCidadeCliente = await _ProdutoFunctions.GetIdPrincipalClienteAsync(idCliente, _httpClient);
                 //pega o preço do produto
-                var precoProduto = _context.Produtos.Where(p => p.Id == idProduto).Select(produto => produto.Preco).FirstOrDefault();
-                precoProduto = (float)Math.Round(precoProduto);
-                string resposta = "Frete de R$ 29,90, Valor:" + (precoProduto + 29.90).ToString("n2");
+                float precoProduto = _ProdutoFunctions.GetPrecoProduto(idProduto, _context);
                 //pega a cidade do cliente
-                var responseString = await _httpClient.GetStringAsync("https://localhost:5001/api/Cidade/" + idCidadeCliente);
-                var cidadeCliente = JsonConvert.DeserializeObject<Cidade>(responseString);
+                var cidadeCliente = await _ProdutoFunctions.GetCidadeClienteAsync(idCidadeCliente, _httpClient);
                 //pega as cidades do produto
                 var cidadesList = _ProdutoFunctions.PegaCidadesProduto(_context, idProduto);
                 //compara para saber se haverá frete, ou seja, cidade de cliente é diferente de produto
-                foreach (var cidadeProduto in cidadesList)
-                {
-                    if (cidadeProduto.Nome == cidadeCliente.Nome) { resposta = "Sem frete, Valor:" + precoProduto.ToString("n2"); }
-                }
-                //criando tabela Associativa ClienteProduto
-                ClienteProduto clienteProduto = new ClienteProduto(1,idProduto,null);
+                string resposta = _ProdutoFunctions.GetRespostaFrete(cidadesList, cidadeCliente.Nome, precoProduto);
+                //caso tudo esta certo, cliente não tera erros
+                clienteProduto.ErrosList = null;
                 //registrando em auditoria
                 var stringContent = new StringContent(JsonConvert.SerializeObject(clienteProduto), Encoding.UTF8, "application/json");
                 await _httpClient.PostAsync("https://localhost:7001/api/Auditoria", stringContent);
@@ -116,6 +131,13 @@ namespace SisProdutos
             }
             catch(Exception e)
             {
+                List<string> erros = new List<string>();
+                erros.Add(e.Message);
+                clienteProduto.ErrosList = erros;
+                //registrando em auditoria
+                var stringContent = new StringContent(JsonConvert.SerializeObject(clienteProduto), Encoding.UTF8, "application/json");
+                await _httpClient.PostAsync("https://localhost:7001/api/Auditoria", stringContent);
+
                 return NotFound();
             }
         }
