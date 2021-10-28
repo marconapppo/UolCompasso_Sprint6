@@ -1,0 +1,496 @@
+{
+	"info": {
+		"_postman_id": "04d367d4-35be-4b0d-a635-8ce5849a6987",
+		"name": "Sprint06",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Produto",
+			"item": [
+				{
+					"name": "Cadastrar Produto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Galinha\",\r\n  \"descricao\": \"string\",\r\n  \"preco\": 0,\r\n  \"palavraChave\": \"string\",\r\n  \"categoria\": \"string\",\r\n  \"cepOpcionais\": [\r\n    \"97400000\",\"01001000\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:6002/api/Produto",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "6002",
+							"path": [
+								"api",
+								"Produto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Busca Produto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:6002/api/Produto/teste/string/string/string",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "6002",
+							"path": [
+								"api",
+								"Produto",
+								"teste",
+								"string",
+								"string",
+								"string"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Busca Todos os Produtos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:6002/api/Produto",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "6002",
+							"path": [
+								"api",
+								"Produto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Busca Produto Frete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImdhYnJpZWwiLCJuYmYiOjE2MzUzNTQ0ODksImV4cCI6MTYzNTM2MTY4OSwiaWF0IjoxNjM1MzU0NDg5fQ.cKwiSFTw0PRm8wBda_18RJpscPaDEf5dQAtLbalADno",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:6002/api/Produto/compra/1020",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "6002",
+							"path": [
+								"api",
+								"Produto",
+								"compra",
+								"1020"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuario",
+			"item": [
+				{
+					"name": "CadastroUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"gabriel\",\r\n  \"password\": \"1aA!123\",\r\n  \"rePassword\": \"1aA!123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:6002/api/Cadastro",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "6002",
+							"path": [
+								"api",
+								"Cadastro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"gabriel\",\r\n  \"password\": \"1aA!123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:6002/api/Login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "6002",
+							"path": [
+								"api",
+								"Login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:6002/api/Logout",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "6002",
+							"path": [
+								"api",
+								"Logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auditoria",
+			"item": [
+				{
+					"name": "Criar Auditoria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Auditoria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cidades",
+			"item": [
+				{
+					"name": "CreateCidade",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Porto Velho\",\r\n    \"estado\": \"RO\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/Cidade",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cidade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCidade",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/Cidade",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cidade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCidade",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/Cidade/cdd2bfce-1e60-4268-c032-08d98cda185",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cidade",
+								"cdd2bfce-1e60-4268-c032-08d98cda185"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCidadeId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/Cidade/42c522d8-bd6e-4807-4968-08d989be287a",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cidade",
+								"42c522d8-bd6e-4807-4968-08d989be287a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutCidade",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"São Pedro do Sul\",\r\n    \"estado\": \"RS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/Cidade/42c522d8-bd6e-4807-4968-08d989be287a",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cidade",
+								"42c522d8-bd6e-4807-4968-08d989be287a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCidadeCep",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "CreateCliente",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InJhZmFlbCIsIm5iZiI6MTYzNTM2MDczMiwiZXhwIjoxNjM1MzY3OTMyLCJpYXQiOjE2MzUzNjA3MzJ9.E0z5MdblBisu8xP99EkHyqx8iIxOACjvbFE2qSrqr8o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Rafael\",\r\n  \"dataNascimento\": \"2021-10-25T18:03:02.182Z\",\r\n  \"cep\": \"97400000\",\r\n  \"logradouro\": \"string\",\r\n  \"bairro\": \"string\",\r\n  \"cepOpcionais\": [\r\n    {\r\n      \"cep\": \"76801002\",\r\n      \"logradouro\": \"string\",\r\n      \"bairro\": \"string\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/Cliente",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cliente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/Cliente",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cliente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetClienteId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/Cliente/3003",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cliente",
+								"3003"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/Cliente/003aec11-0bba-4234-cbac-08d98a8b22eb",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cliente",
+								"003aec11-0bba-4234-cbac-08d98a8b22eb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutCliente",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Juliana\",\r\n    \"dataNascimento\": \"2021-10-08T00:00:00\",\r\n    \"cep\": \"01001000\",\r\n    \"logradouro\": \"São sepe\",\r\n    \"bairro\": \"teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/Cliente/003aec11-0bba-4234-cbac-08d98a8b22eb",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Cliente",
+								"003aec11-0bba-4234-cbac-08d98a8b22eb"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

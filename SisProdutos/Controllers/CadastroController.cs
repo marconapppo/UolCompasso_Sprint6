@@ -42,17 +42,6 @@ namespace SisProdutos
             usuario.Id = usuarioIdentity.Id;
             usuario.Username = usuarioIdentity.UserName;
             return CreatedAtAction(nameof(GetUsuario), new { nomeUsuario = usuario.Username }, usuario);
- 
-
-            
-            ////criando cliente
-            //CreateClienteDto createClienteDto = _mapper.Map<CreateClienteDto>(createUsuarioClienteDto);
-            //var stringContent = new StringContent(JsonConvert.SerializeObject(createUsuarioClienteDto), Encoding.UTF8, "application/json");
-            ////mandando resquest para criar cliente em SisCliente
-            //var responseString = await _httpClient.PostAsync("https://localhost:5001/api/Cliente/" + usuario.Id, stringContent);
-
-            //if (responseString.IsSuccessStatusCode) { return Ok(); }
-            //return NotFound();
         }
 
         [HttpGet("{nomeUsuario}")]
